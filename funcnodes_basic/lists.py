@@ -32,8 +32,8 @@ class GetIndexNode(fn.Node):
         uuid="element",
     )
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.get_input("inputlist").on("after_set_value", self._update_indices)
 
     def _update_indices(self, **kwargs):
@@ -61,6 +61,6 @@ class GetIndexNode(fn.Node):
 NODE_SHELF = fn.Shelf(
     nodes=[contains, GetIndexNode],
     subshelves=[],
-    name="Logic",
-    description="Control flow and decision making nodes.",
+    name="Lists",
+    description="List operations",
 )
