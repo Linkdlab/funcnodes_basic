@@ -46,6 +46,8 @@ from funcnodes_basic.strings import (
     re_subn,
     re_escape,
     re_split,
+    string_decode,
+    string_encode,
     regex_shelf,
     NODE_SHELF,
 )
@@ -159,6 +161,18 @@ class TestStringMethods(unittest.IsolatedAsyncioTestCase):
             await node
             self.assertEqual(node.outputs[output].value, expected_output)
             tested_nodes.append(node.__class__)
+
+        node = string_decode()
+        node.inputs["b"].value = b"Hello, World!"
+        await node
+        self.assertEqual(node.outputs["decoded"].value, "Hello, World!")
+        tested_nodes.append(node.__class__)
+
+        node = string_encode()
+        node.inputs["s"].value = "Hello, World!"
+        await node
+        self.assertEqual(node.outputs["encoded"].value, b"Hello, World!")
+        tested_nodes.append(node.__class__)
 
         for nodeclass in NODE_SHELF["nodes"]:
             if nodeclass not in tested_nodes:

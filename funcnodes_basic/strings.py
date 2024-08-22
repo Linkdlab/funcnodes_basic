@@ -549,8 +549,19 @@ def string_isascii(s: str) -> bool:
         {"name": "encoded"},
     ],
 )
-def string_encode(s: str, encoding: POSSIBLE_DECODINGS_TYPE = "utf-8") -> bytes:
-    return s.encode(encoding)
+def string_encode(
+    s: str,
+    encoding: POSSIBLE_DECODINGS_TYPE = "utf-8",
+    errors: Literal[
+        "strict",
+        "replace",
+        "ignore",
+        "xmlcharrefreplace",
+        "backslashreplace",
+        "namereplace",
+    ] = "replace",
+) -> bytes:
+    return s.encode(encoding, errors)
 
 
 @fn.NodeDecorator(
@@ -561,8 +572,19 @@ def string_encode(s: str, encoding: POSSIBLE_DECODINGS_TYPE = "utf-8") -> bytes:
         {"name": "decoded"},
     ],
 )
-def string_decode(b: bytes, encoding: POSSIBLE_DECODINGS_TYPE = "utf-8") -> str:
-    return b.decode(encoding)
+def string_decode(
+    b: bytes,
+    encoding: POSSIBLE_DECODINGS_TYPE = "utf_8",
+    errors: Literal[
+        "strict",
+        "replace",
+        "ignore",
+        "xmlcharrefreplace",
+        "backslashreplace",
+        "namereplace",
+    ] = "replace",
+) -> str:
+    return b.decode(encoding, errors)
 
 
 @fn.NodeDecorator(
@@ -691,9 +713,23 @@ regex_shelf = fn.Shelf(
         re_escape,
         re_split,
     ],
+    subshelves=[],
     name="Regular Expressions",
     description="Basic regular expression operations.",
 )
+
+
+@fn.NodeDecorator(
+    node_id="string.input",
+    node_name="Input",
+    description="Input a string",
+    outputs=[
+        {"name": "string"},
+    ],
+)
+def string_input(s: str) -> str:
+    return s
+
 
 NODE_SHELF = fn.Shelf(
     nodes=[
@@ -701,6 +737,8 @@ NODE_SHELF = fn.Shelf(
         string_concat,
         string_split,
         string_join,
+        string_encode,
+        string_decode,
         string_upper,
         string_lower,
         string_replace,
@@ -733,6 +771,7 @@ NODE_SHELF = fn.Shelf(
         string_isdecimal,
         string_isnumeric,
         string_isascii,
+        string_input,
     ],
     subshelves=[regex_shelf],
     name="Strings",
