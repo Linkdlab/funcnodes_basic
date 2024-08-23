@@ -18,3 +18,7 @@ pre-commit = "*"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins."funcnodes.module"]
+module = "funcnodes_basic"
+shelf = "funcnodes_basic:NODE_SHELF"

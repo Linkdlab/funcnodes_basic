@@ -85,7 +85,8 @@ def dict_from_keys_values(keys: List[Any], values: List[Any]) -> dict:
     ],
 )
 def dict_to_list(dictionary: dict) -> Tuple[List[Any], List[Any]]:
-    return list(dictionary.items())
+    keys, values = zip(*dictionary.items())
+    return list(keys), list(values)
 
 
 NODE_SHELF = fn.Shelf(
