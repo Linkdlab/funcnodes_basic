@@ -358,13 +358,13 @@ class TestMathNodes(unittest.IsolatedAsyncioTestCase):
         node = math_nodes.math_exp2_node()
         node.inputs["a"].value = 3.0
         await node
-        self.assertEqual(node.outputs["out"].value, 8.0)
+        self.assertEqual(node.outputs["out"].value, math.exp2(3.0))
 
     async def test_math_cbrt_node(self):
         node = math_nodes.math_cbrt_node()
         node.inputs["a"].value = 27.0
         await node
-        self.assertEqual(node.outputs["out"].value, 3.0)
+        self.assertEqual(node.outputs["out"].value, math.cbrt(27.0))
 
     async def test_math_isfinite_node(self):
         node = math_nodes.math_isfinite_node()
