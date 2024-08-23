@@ -1,0 +1,7 @@
+name: Funcnodes Module wf
+
+on: [push, pull_request]
+
+jobs:
+  wf:
+    uses: Linkdlab/common_workflows/workflows/funcnodes_module_wf@main
