@@ -13,6 +13,7 @@ requests = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
+pre-commit = "*"
 
 [build-system]
 requires = ["poetry-core"]
