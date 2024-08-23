@@ -32,8 +32,10 @@ class WhileNode(Node):
     done = NodeOutput(id="done", type=Any)
 
     async def func(self, condition: bool, input: Any) -> None:
-        if condition:
+        if self.inputs["condition"].value:
             self.outputs["do"].value = input
+            triggerstack = TriggerStack()
+            await self.outputs["do"].trigger(triggerstack)
             self.request_trigger()
         else:
             self.outputs["done"].value = input
@@ -69,14 +71,11 @@ class ForNode(Node):
 
     async def func(self, input: list, collector: Optional[Any] = None) -> None:
         results = []
+        self.outputs["done"].value = NoValue
         for i in input:
             self.outputs["do"].set_value(i, does_trigger=False)
             triggerstack = TriggerStack()
-            try:
-                await self.outputs["do"].trigger(triggerstack)
-                await triggerstack
-            except Exception as e:
-                pass
+            await self.outputs["do"].trigger(triggerstack)
             v = self.inputs["collector"].value
             if v is not NoValue:
                 results.append(v)
