@@ -12,10 +12,10 @@ class TestStringMethods(unittest.IsolatedAsyncioTestCase):
         await node
 
         self.assertEqual(
-            node.inputs["key"].value_options["options"], {0: "a", 1: "b", 2: "c"}
+            node.inputs["key"].value_options["options"], {"a": "0", "b": "1", "c": "2"}
         )
 
-        node.inputs["key"].value = 0
+        node.inputs["key"].value = "0"
         await node
 
         self.assertEqual(node.outputs["value"].value, 1)
