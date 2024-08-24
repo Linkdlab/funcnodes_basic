@@ -55,7 +55,7 @@ from funcnodes_basic.strings import (
 
 
 class TestStringMethods(unittest.IsolatedAsyncioTestCase):
-    async def test_methods(self):
+    async def test_string_methods(self):
         tested_nodes = []
 
         teststring = "Hello, World!"
