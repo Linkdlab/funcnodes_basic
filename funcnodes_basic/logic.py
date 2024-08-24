@@ -100,7 +100,8 @@ class CollectorNode(Node):
     async def func(self, input: Any, reset: Any = NoValue) -> None:
         if reset != NoValue:
             self.collection = []
-
+            self.inputs["reset"].value = NoValue
+            
         self.collection.append(input)
         self.outputs["output"].value = self.collection
 
