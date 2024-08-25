@@ -6,7 +6,7 @@ from .strings import NODE_SHELF as strings_shelf
 from .dicts import NODE_SHELF as dicts_shelf
 
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 NODE_SHELF = Shelf(
     nodes=[],
