@@ -1,20 +1,18 @@
 [tool.poetry]
 name = "funcnodes-basic"
-version = "0.1.5"
+version = "0.1.6"
 description = "Basic functionalities for funcnodes"
 authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-funcnodes = "*"
-requests = "*"
-
+python = ">=3.11"
+funcnodes-core = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 pre-commit = "*"
-funcnodes-module = "*"
+#funcnodes-module = "*"
 
 [build-system]
 requires = ["poetry-core"]

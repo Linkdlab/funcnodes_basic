@@ -3,8 +3,8 @@
 import math
 import sys
 from typing import List
-from funcnodes.nodemaker import NodeDecorator
-from funcnodes.lib import module_to_shelf
+from funcnodes_core.nodemaker import NodeDecorator
+from funcnodes_core.lib import module_to_shelf
 
 
 # region: Basic math nodes

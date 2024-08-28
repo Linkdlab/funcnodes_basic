@@ -1,11 +1,11 @@
 """Logic Nodes for control flow and decision making."""
 
-from funcnodes.node import Node, TriggerStack
-from typing import Any, List, Optional, Union
-from funcnodes.io import NodeInput, NodeOutput, NoValue
+from funcnodes_core.node import Node, TriggerStack
+from typing import Any, List, Optional
+from funcnodes_core.io import NodeInput, NodeOutput, NoValue
 import asyncio
 
-import funcnodes as fn
+import funcnodes_core as fn
 
 
 class IfNode(Node):
@@ -101,7 +101,7 @@ class CollectorNode(Node):
         if reset != NoValue:
             self.collection = []
             self.inputs["reset"].value = NoValue
-            
+
         self.collection.append(input)
         self.outputs["output"].value = self.collection
 
