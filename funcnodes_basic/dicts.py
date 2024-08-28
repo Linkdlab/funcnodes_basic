@@ -1,7 +1,8 @@
 """
 work with python dictionaries
 """
-import funcnodes as fn
+
+import funcnodes_core as fn
 from typing import Any, List, Tuple
 
 

@@ -1,8 +1,9 @@
 """
 basic functionalities for strings
 """
-import funcnodes as fn
-from typing import Any, List, Tuple, Literal, Optional
+
+import funcnodes_core as fn
+from typing import List, Tuple, Literal, Optional
 import re
 
 
