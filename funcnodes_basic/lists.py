@@ -1,5 +1,5 @@
 from typing import List, Union, Any
-import funcnodes as fn
+import funcnodes_core as fn
 
 
 @fn.NodeDecorator(
