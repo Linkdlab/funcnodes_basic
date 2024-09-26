@@ -4,15 +4,17 @@ version = "0.1.6"
 description = "Basic functionalities for funcnodes"
 authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
 readme = "README.md"
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = ">=3.11"
-funcnodes-core = "*"
+funcnodes-core = ">=0.1.14"
+funcnodes = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 pre-commit = "*"
-funcnodes-module = ">=0.1.10"
+funcnodes-module = "*"
 
 [build-system]
 requires = ["poetry-core"]
