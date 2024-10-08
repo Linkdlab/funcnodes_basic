@@ -297,17 +297,16 @@ setuptools = "*"
 
 [[package]]
 name = "funcnodes-module"
-version = "0.1.15"
+version = "0.1.16"
 description = ""
 optional = false
 python-versions = ">=3.11"
 files = [
-    {file = "funcnodes_module-0.1.15-py3-none-any.whl", hash = "sha256:04360842ae2aaca02ef4b38f177e7390ef5fa0f7ec9f193192ef2221de458440"},
-    {file = "funcnodes_module-0.1.15.tar.gz", hash = "sha256:df96dc587f5b8ed0a0b59024f6750a2d23ae11e937a75944fde4eb5e732428ab"},
+    {file = "funcnodes_module-0.1.16-py3-none-any.whl", hash = "sha256:163200e1d52f8a5132698de628d3d323d00f021f0533c0c37b06e69c220be05b"},
+    {file = "funcnodes_module-0.1.16.tar.gz", hash = "sha256:78781c74e49d81dcf7cdc358fa8ee16d038e3edc2d87f221245ec3e10ff9eadd"},
 ]
 
 [package.dependencies]
-funcnodes = "*"
 licensecheck = {version = ">=2024.3", markers = "python_version >= \"3.11\" and python_version < \"4\""}
 
 [[package]]
