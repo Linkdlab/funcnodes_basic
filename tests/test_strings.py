@@ -1,5 +1,4 @@
 import unittest
-from funcnodes_basic import strings
 
 from funcnodes_basic.strings import (
     string_length,
@@ -105,7 +104,7 @@ class TestStringMethods(unittest.IsolatedAsyncioTestCase):
         node = string_join()
         node.inputs["strings"].value = ["Hello", "World"]
         await node
-        self.assertEqual(node.outputs["joined"].value, "Hello World")
+        self.assertEqual(node.outputs["joined"].value, "HelloWorld")
         tested_nodes.append(node.__class__)
 
         node = string_startswith()
@@ -181,7 +180,7 @@ class TestStringMethods(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(node.outputs["string"].value, "Hello, World!")
         tested_nodes.append(node.__class__)
 
-        for nodeclass in NODE_SHELF["nodes"]:
+        for nodeclass in NODE_SHELF.nodes:
             if nodeclass not in tested_nodes:
                 raise AssertionError(f"Node {nodeclass} was not tested")
 
@@ -250,6 +249,6 @@ class TestStringMethods(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(node.outputs["splitted"].value, ["Hello", "World!"])
         tested_nodes.append(node.__class__)
 
-        for nodeclass in regex_shelf["nodes"]:
+        for nodeclass in regex_shelf.nodes:
             if nodeclass not in tested_nodes:
                 raise AssertionError(f"Node {nodeclass} was not tested")

@@ -154,7 +154,7 @@ def string_split(s: str, delimiter: Optional[str] = None) -> List[str]:
         {"name": "joined"},
     ],
 )
-def string_join(strings: List[str], delimiter: str = " ") -> str:
+def string_join(strings: List[str], delimiter: str = "") -> str:
     return delimiter.join(strings)
 
 
