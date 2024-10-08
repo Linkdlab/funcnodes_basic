@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "funcnodes-basic"
-version = "0.1.8"
+version = "0.1.9"
 description = "Basic functionalities for funcnodes"
 authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
 readme = "README.md"

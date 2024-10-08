@@ -22,9 +22,7 @@ def value_node(value: float) -> float:
 )
 def add_node(a: float, b: float) -> float:
     """Add two numbers"""
-    a = float(a)
-    b = float(b)
-    return a + b
+    return float(a) + float(b)
 
 
 @NodeDecorator(
