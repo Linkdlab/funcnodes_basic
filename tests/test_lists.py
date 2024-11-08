@@ -10,9 +10,13 @@ class TestListsMethods(unittest.IsolatedAsyncioTestCase):
     async def test_list_getindex(self):
         testlist = [1, 2, 3]
 
-        node = lists.GetIndexNode()
+        node = lists.list_get()
 
-        node.inputs["inputlist"].value = testlist
+        node.inputs["lst"].value = testlist
+        await node
+
+        self.assertEqual(node.outputs["element"].value, 3)
+
         node.inputs["index"].value = 1
         await node
 
