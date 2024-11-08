@@ -11,52 +11,30 @@ def contains(collection: List[Union[str, Any]], item: Union[str, Any]) -> bool:
     return item in collection
 
 
-class GetIndexNode(fn.Node):
-    node_id = "list.get"
-    node_name = "Get Element"
-    description = "Gets an element from a list."
-    inputlist = fn.NodeInput(
-        name="List",
-        type=List[Union[str, Any]],
-        uuid="inputlist",
-    )
-
-    index = fn.NodeInput(
-        name="Index",
-        type=int,
-        uuid="index",
-    )
-
-    element = fn.NodeOutput(
-        name="Element",
-        type=Any,
-        uuid="element",
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.get_input("inputlist").on("after_set_value", self._update_indices)
-
-    def _update_indices(self, **kwargs):
-        try:
-            lst = self.get_input("inputlist").value
-            index = self.get_input("index")
-        except KeyError:
-            return
-        try:
-            index.update_value_options(min=0, max=len(lst) - 1)
-        except Exception:
-            index.update_value_options(min=0, max=0)
-
-    async def func(
-        self,
-        inputlist: List[Any],
-        index: int,
-    ) -> Any:
-        index = int(index)
-        ele = inputlist[index]
-        self.get_output("element").value = ele
-        return ele
+@fn.NodeDecorator(
+    id="list_get",
+    name="Get Element",
+    description="Gets an element from a list.",
+    default_io_options={
+        "lst": {
+            "on": {
+                "after_set_value": fn.decorator.update_other_io_value_options(
+                    "index",
+                    lambda result: {
+                        "min": -len(result),
+                        "max": len(result) - 1 if len(result) > 0 else 0,
+                    },
+                )
+            }
+        },
+    },
+    outputs=[
+        {"name": "element"},
+    ],
+)
+def list_get(lst: List[Any], index: int = -1) -> Tuple[Any]:
+    # shallow copy the list
+    return lst[index]
 
 
 @fn.NodeDecorator(
@@ -102,7 +80,10 @@ def list_extend(lst: List[Any], items: List[Any]) -> List[Any]:
             "on": {
                 "after_set_value": fn.decorator.update_other_io_value_options(
                     "index",
-                    lambda result: {"min": 0, "max": len(result) - 1},
+                    lambda result: {
+                        "min": -len(result),
+                        "max": len(result) - 1 if len(result) > 0 else 0,
+                    },
                 )
             }
         },
@@ -112,7 +93,7 @@ def list_extend(lst: List[Any], items: List[Any]) -> List[Any]:
         {"name": "item"},
     ],
 )
-def list_pop(lst: List[Any], index: int) -> Tuple[List[Any], Any]:
+def list_pop(lst: List[Any], index: int = -1) -> Tuple[List[Any], Any]:
     # shallow copy the list
     lst = copy.copy(lst)
     item = lst.pop(index)
@@ -177,13 +158,16 @@ def list_count(lst: List[Any], item: Any) -> int:
             "on": {
                 "after_set_value": fn.decorator.update_other_io_value_options(
                     "index",
-                    lambda result: {"min": 0, "max": len(result)},
+                    lambda result: {
+                        "min": -len(result),
+                        "max": len(result),
+                    },
                 )
             }
         },
     },
 )
-def list_insert(lst: List[Any], index: int, item: Any) -> List[Any]:
+def list_insert(lst: List[Any], item: Any, index: int = -1) -> List[Any]:
     lst = copy.copy(lst)
     lst.insert(index, item)
     return lst
@@ -197,13 +181,16 @@ def list_insert(lst: List[Any], index: int, item: Any) -> List[Any]:
             "on": {
                 "after_set_value": fn.decorator.update_other_io_value_options(
                     "index",
-                    lambda result: {"min": 0, "max": len(result) - 1},
+                    lambda result: {
+                        "min": -len(result),
+                        "max": len(result) - 1 if len(result) > 0 else 0,
+                    },
                 )
             }
         },
     },
 )
-def list_set(lst: List[Any], index: int, item: Any) -> List[Any]:
+def list_set(lst: List[Any], item: Any, index: int = -1) -> List[Any]:
     lst = copy.copy(lst)
     lst[index] = item
     return lst
@@ -250,7 +237,7 @@ def list_slice_step(
 NODE_SHELF = fn.Shelf(
     nodes=[
         contains,
-        GetIndexNode,
+        list_get,
         to_list,
         list_length,
         list_append,
