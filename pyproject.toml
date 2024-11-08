@@ -21,7 +21,7 @@ funcnodes = "*"
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
 pre-commit = "*"
-funcnodes-module = "*"
+funcnodes-module = "^0.1.19"
 
 [build-system]
 requires = ["poetry-core"]
