@@ -53,11 +53,23 @@ class WaitNode(Node):
         render_options={"step": "0.1"},
         value_options={"min": 0.0},
     )
-    input = NodeInput(id="input", type=Any)
+    input = NodeInput(id="input", type=Optional[Any])
     output = NodeOutput(id="output", type=Any)
 
-    async def func(self, delay: float, input: Any) -> None:
-        await asyncio.sleep(delay)
+    async def func(self, delay: float, input: Optional[Any] = NoValue) -> None:
+        if delay > 1:
+            total_seconds = int(delay)
+            remaining_seconds = delay - total_seconds
+            self.progress.unit = "s"
+            self.progress.reset(total=total_seconds)
+            self.progress.set_description("Waiting")
+            for _ in range(total_seconds):
+                await asyncio.sleep(1)
+                self.progress.update()
+            await asyncio.sleep(remaining_seconds)
+
+        else:
+            await asyncio.sleep(delay)
         self.outputs["output"].value = input
 
 
@@ -72,6 +84,12 @@ class ForNode(Node):
     async def func(self, input: list, collector: Optional[Any] = None) -> None:
         results = []
         self.outputs["done"].value = NoValue
+
+        iplen = len(input)
+        self.progress.unit = "it"
+        self.progress.reset(total=iplen)
+        self.progress.set_description("Iterating")
+
         for i in input:
             self.outputs["do"].set_value(i, does_trigger=False)
             triggerstack = TriggerStack()
@@ -80,6 +98,7 @@ class ForNode(Node):
             if v is not NoValue:
                 results.append(v)
                 self.inputs["collector"].value = NoValue
+            self.progress.update()
         self.outputs["done"].value = results
 
 
