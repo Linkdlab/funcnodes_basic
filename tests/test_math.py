@@ -3,8 +3,8 @@ from funcnodes_basic import math_nodes
 import math
 import sys
 
-class TestMathNodes(unittest.IsolatedAsyncioTestCase):
 
+class TestMathNodes(unittest.IsolatedAsyncioTestCase):
     async def test_value_node(self):
         node = math_nodes.value_node()
         node.inputs["value"].value = 10.0
@@ -353,7 +353,6 @@ class TestMathNodes(unittest.IsolatedAsyncioTestCase):
         await node
         self.assertEqual(node.outputs["out"].value, math.tanh(0.0))
 
-
     async def test_math_exp2_node(self):
         node = math_nodes.math_exp2_node()
         node.inputs["a"].value = 3.0
@@ -513,6 +512,7 @@ class TestMathNodes(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(node.outputs["out"].value, 5.0)
 
     if sys.version_info >= (3, 12):
+
         async def test_math_sumprod_node(self):
             node = math_nodes.math_sumprod_node()
             node.inputs["a"].value = [1.0, 2.0]
