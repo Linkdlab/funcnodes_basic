@@ -1,25 +1,29 @@
-[tool.poetry]
+[project]
 name = "funcnodes-basic"
-version = "0.2.0"
+version = "0.2.1"
 description = "Basic functionalities for funcnodes"
-authors = ["Julian Kimmig <julian.kimmig@gmx.net>"]
+authors = [
+{name = "Julian Kimmig", email = "julian.kimmig@linkdlab.de>"}
+]
 readme = "README.md"
 license = "AGPL-3.0"
 classifiers = [
     "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     ]
 
-[tool.poetry.urls]
+requires-python = ">=3.11"
+dependencies = [
+    "funcnodes-core>=0.3.9",
+    "funcnodes",
+    ]
+
+[project.urls]
 homepage  = "https://github.com/Linkdlab/funcnodes_basic"
 source  = "https://github.com/Linkdlab/funcnodes_basic"
 tracker  = "https://github.com/Linkdlab/funcnodes_basic/issues"
 download = "https://pypi.org/project/funcnodes-basic/#files"
 
 
-[tool.poetry.dependencies]
-python = ">=3.11"
-funcnodes-core = ">=0.3.4"
-funcnodes = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
@@ -30,6 +34,6 @@ funcnodes-module = "^0.1.19"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.plugins."funcnodes.module"]
+[project.entry-points."funcnodes.module"]
 module = "funcnodes_basic"
 shelf = "funcnodes_basic:NODE_SHELF"

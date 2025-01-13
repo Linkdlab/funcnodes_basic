@@ -6,6 +6,7 @@ from funcnodes_core.io import NodeInput, NodeOutput, NoValue
 import asyncio
 
 import funcnodes_core as fn
+import time
 
 
 class IfNode(Node):
@@ -57,17 +58,18 @@ class WaitNode(Node):
     output = NodeOutput(id="output", type=Any)
 
     async def func(self, delay: float, input: Optional[Any] = NoValue) -> None:
-        if delay > 1:
-            total_seconds = int(delay)
-            remaining_seconds = delay - total_seconds
-            self.progress.unit = "s"
-            self.progress.reset(total=total_seconds)
-            self.progress.set_description("Waiting")
-            for _ in range(total_seconds):
-                await asyncio.sleep(1)
-                self.progress.update()
-            await asyncio.sleep(remaining_seconds)
+        start = time.time()
+        remaining_seconds = delay
 
+        if delay > 1:
+            with self.progress(desc="Waiting", unit="s", total=delay) as pbar:
+                while remaining_seconds > 0:
+                    interval = min(remaining_seconds, 1)
+                    await asyncio.sleep(interval)
+                    now = time.time()
+                    elapsed = now - start
+                    remaining_seconds = max(0, delay - elapsed)
+                    pbar.update(interval)
         else:
             await asyncio.sleep(delay)
         self.outputs["output"].value = input
@@ -85,12 +87,13 @@ class ForNode(Node):
         results = []
         self.outputs["done"].value = NoValue
 
-        iplen = len(input)
-        self.progress.unit = "it"
-        self.progress.reset(total=iplen)
-        self.progress.set_description("Iterating")
+        iplen = None
+        try:
+            iplen = len(input)
+        except Exception:
+            pass
 
-        for i in input:
+        for i in self.progress(input, desc="Iterating", unit="it", total=iplen):
             self.outputs["do"].set_value(i, does_trigger=False)
             triggerstack = TriggerStack()
             await self.outputs["do"].trigger(triggerstack)
@@ -98,7 +101,6 @@ class ForNode(Node):
             if v is not NoValue:
                 results.append(v)
                 self.inputs["collector"].value = NoValue
-            self.progress.update()
         self.outputs["done"].value = results
 
 
