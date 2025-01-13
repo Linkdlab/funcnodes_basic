@@ -1,13 +1,13 @@
 import unittest
 from funcnodes_basic import dicts
 
-        # DictGetNode,
-        # dict_keys,
-        # dict_values,
-        # dict_items,
-        # dict_from_items,
-        # dict_from_keys_values,
-        # dict_to_list,
+# DictGetNode,
+# dict_keys,
+# dict_values,
+# dict_items,
+# dict_from_items,
+# dict_from_keys_values,
+# dict_to_list,
 
 
 class TestDictMethods(unittest.IsolatedAsyncioTestCase):
@@ -80,7 +80,6 @@ class TestDictMethods(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(node.outputs["out"].value, {"a": 1, "b": 2, "c": 3})
 
-
     async def test_dict_to_list(self):
         testdict = {"a": 1, "b": 2, "c": 3}
 
@@ -91,5 +90,3 @@ class TestDictMethods(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(node.outputs["keys"].value, ["a", "b", "c"])
         self.assertEqual(node.outputs["values"].value, [1, 2, 3])
-        
-    
