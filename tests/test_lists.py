@@ -3,7 +3,7 @@ from funcnodes_basic import lists
 
 import funcnodes as fn
 
-fn.config.IN_NODE_TEST = True
+fn.config.set_in_test()
 
 
 class TestListsMethods(unittest.IsolatedAsyncioTestCase):
