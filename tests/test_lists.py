@@ -1,210 +1,239 @@
-import unittest
 from funcnodes_basic import lists
-
+import pytest_funcnodes
 import funcnodes as fn
 
-fn.config.IN_NODE_TEST = True
+fn.config.set_in_test()
 
 
-class TestListsMethods(unittest.IsolatedAsyncioTestCase):
-    async def test_list_getindex(self):
-        testlist = [1, 2, 3]
+@pytest_funcnodes.nodetest(lists.list_get)
+async def test_list_getindex():
+    testlist = [1, 2, 3]
 
-        node = lists.list_get()
+    node = lists.list_get()
 
-        node.inputs["lst"].value = testlist
-        await node
+    node.inputs["lst"].value = testlist
+    await node
 
-        self.assertEqual(node.outputs["element"].value, 3)
+    assert node.outputs["element"].value == 3
 
-        node.inputs["index"].value = 1
-        await node
+    node.inputs["index"].value = 1
+    await node
 
-        self.assertEqual(node.outputs["element"].value, 2)
+    assert node.outputs["element"].value == 2
 
-    async def test_list_contains(self):
-        testlist = [1, 2, 3]
 
-        node = lists.contains()
+@pytest_funcnodes.nodetest(lists.contains)
+async def test_list_contains():
+    testlist = [1, 2, 3]
 
-        node.inputs["collection"].value = testlist
-        node.inputs["item"].value = 2
-        await node
+    node = lists.contains()
 
-        self.assertEqual(node.outputs["out"].value, True)
+    node.inputs["collection"].value = testlist
+    node.inputs["item"].value = 2
+    await node
 
-    async def test_to_list(self):
-        node = lists.to_list()
+    assert node.outputs["out"].value is True
 
-        node.inputs["obj"].value = 1
-        await node
 
-        self.assertEqual(node.outputs["out"].value, [1])
+@pytest_funcnodes.nodetest(lists.to_list)
+async def test_to_list():
+    node = lists.to_list()
 
-    async def test_list_length(self):
-        testlist = [1, 2, 3]
+    node.inputs["obj"].value = 1
+    await node
 
-        node = lists.list_length()
+    assert node.outputs["out"].value == [1]
 
-        node.inputs["lst"].value = testlist
-        await node
 
-        self.assertEqual(node.outputs["out"].value, 3)
+@pytest_funcnodes.nodetest(lists.list_length)
+async def test_list_length():
+    testlist = [1, 2, 3]
 
-    async def test_list_append(self):
-        testlist = [1, 2, 3]
+    node = lists.list_length()
 
-        node = lists.list_append()
+    node.inputs["lst"].value = testlist
+    await node
 
-        node.inputs["lst"].value = testlist
-        node.inputs["item"].value = 4
-        await node
+    assert node.outputs["out"].value == 3
 
-        self.assertEqual(node.outputs["out"].value, [1, 2, 3, 4])
-        self.assertEqual(testlist, [1, 2, 3])
 
-    async def test_list_extend(self):
-        testlist = [1, 2, 3]
+@pytest_funcnodes.nodetest(lists.list_append)
+async def test_list_append():
+    testlist = [1, 2, 3]
 
-        node = lists.list_extend()
+    node = lists.list_append()
 
-        node.inputs["lst"].value = testlist
-        node.inputs["items"].value = [4, 5]
-        await node
+    node.inputs["lst"].value = testlist
+    node.inputs["item"].value = 4
+    await node
 
-        self.assertEqual(node.outputs["out"].value, [1, 2, 3, 4, 5])
-        self.assertEqual(testlist, [1, 2, 3])
+    assert node.outputs["out"].value == [1, 2, 3, 4]
+    assert testlist == [1, 2, 3]
 
-    async def test_list_pop(self):
-        testlist = [1, 2, 3]
 
-        node = lists.list_pop()
+@pytest_funcnodes.nodetest(lists.list_extend)
+async def test_list_extend():
+    testlist = [1, 2, 3]
 
-        node.inputs["lst"].value = testlist
-        node.inputs["index"].value = 1
-        await node
+    node = lists.list_extend()
 
-        self.assertEqual(node.outputs["new_list"].value, [1, 3])
-        self.assertEqual(testlist, [1, 2, 3])
+    node.inputs["lst"].value = testlist
+    node.inputs["items"].value = [4, 5]
+    await node
 
-        self.assertEqual(node.outputs["item"].value, 2)
+    assert node.outputs["out"].value == [1, 2, 3, 4, 5]
+    assert testlist == [1, 2, 3]
 
-    async def test_list_remove(self):
-        testlist = [1, 2, 3, 3, 3]
 
-        node = lists.list_remove()
+@pytest_funcnodes.nodetest(lists.list_pop)
+async def test_list_pop():
+    testlist = [1, 2, 3]
 
-        node.inputs["lst"].value = testlist
-        node.inputs["item"].value = 3
-        await node
+    node = lists.list_pop()
 
-        self.assertEqual(node.outputs["out"].value, [1, 2, 3, 3])
-        self.assertEqual(testlist, [1, 2, 3, 3, 3])
-        node.inputs["all"].value = True
-        await node
+    node.inputs["lst"].value = testlist
+    node.inputs["index"].value = 1
+    await node
 
-        self.assertEqual(node.outputs["out"].value, [1, 2])
-        self.assertEqual(testlist, [1, 2, 3, 3, 3])
+    assert node.outputs["new_list"].value == [1, 3]
+    assert testlist == [1, 2, 3]
 
-    async def test_list_index(self):
-        testlist = [1, 2, 3]
+    assert node.outputs["item"].value == 2
 
-        node = lists.list_index()
 
-        node.inputs["lst"].value = testlist
-        node.inputs["item"].value = 2
-        await node
+@pytest_funcnodes.nodetest(lists.list_remove)
+async def test_list_remove():
+    testlist = [1, 2, 3, 3, 3]
 
-        self.assertEqual(node.outputs["out"].value, 1)
+    node = lists.list_remove()
 
-    async def test_list_reverse(self):
-        testlist = [1, 2, 3]
+    node.inputs["lst"].value = testlist
+    node.inputs["item"].value = 3
+    await node
 
-        node = lists.list_reverse()
+    assert node.outputs["out"].value == [1, 2, 3, 3]
+    assert testlist == [1, 2, 3, 3, 3]
+    node.inputs["all"].value = True
+    await node
 
-        node.inputs["lst"].value = testlist
-        await node
+    assert node.outputs["out"].value == [1, 2]
+    assert testlist == [1, 2, 3, 3, 3]
 
-        self.assertEqual(node.outputs["out"].value, [3, 2, 1])
-        self.assertEqual(testlist, [1, 2, 3])
 
-    async def test_list_sort(self):
-        testlist = [3, 2, 1]
+@pytest_funcnodes.nodetest(lists.list_index)
+async def test_list_index():
+    testlist = [1, 2, 3]
 
-        node = lists.list_sort()
+    node = lists.list_index()
 
-        node.inputs["lst"].value = testlist
-        await node
+    node.inputs["lst"].value = testlist
+    node.inputs["item"].value = 2
+    await node
 
-        self.assertEqual(node.outputs["out"].value, [1, 2, 3])
-        self.assertEqual(testlist, [3, 2, 1])
+    assert node.outputs["out"].value == 1
 
-        node.inputs["reverse"].value = True
-        await node
 
-        self.assertEqual(node.outputs["out"].value, [3, 2, 1])
-        self.assertEqual(testlist, [3, 2, 1])
+@pytest_funcnodes.nodetest(lists.list_reverse)
+async def test_list_reverse():
+    testlist = [1, 2, 3]
 
-    async def test_list_count(self):
-        testlist = [1, 2, 3, 3]
+    node = lists.list_reverse()
 
-        node = lists.list_count()
+    node.inputs["lst"].value = testlist
+    await node
 
-        node.inputs["lst"].value = testlist
-        node.inputs["item"].value = 3
-        await node
+    assert node.outputs["out"].value == [3, 2, 1]
+    assert testlist == [1, 2, 3]
 
-        self.assertEqual(node.outputs["out"].value, 2)
 
-    async def test_list_insert(self):
-        testlist = [1, 2, 3]
+@pytest_funcnodes.nodetest(lists.list_sort)
+async def test_list_sort():
+    testlist = [3, 2, 1]
 
-        node = lists.list_insert()
+    node = lists.list_sort()
 
-        node.inputs["lst"].value = testlist
-        node.inputs["index"].value = 1
-        node.inputs["item"].value = 4
-        await node
+    node.inputs["lst"].value = testlist
+    await node
 
-        self.assertEqual(node.outputs["out"].value, [1, 4, 2, 3])
-        self.assertEqual(testlist, [1, 2, 3])
+    assert node.outputs["out"].value == [1, 2, 3]
+    assert testlist == [3, 2, 1]
 
-    async def test_list_set(self):
-        testlist = [1, 2, 3]
+    node.inputs["reverse"].value = True
+    await node
 
-        node = lists.list_set()
+    assert node.outputs["out"].value == [3, 2, 1]
+    assert testlist == [3, 2, 1]
 
-        node.inputs["lst"].value = testlist
-        node.inputs["index"].value = 1
-        node.inputs["item"].value = 4
-        await node
 
-        self.assertEqual(node.outputs["out"].value, [1, 4, 3])
-        self.assertEqual(testlist, [1, 2, 3])
+@pytest_funcnodes.nodetest(lists.list_count)
+async def test_list_count():
+    testlist = [1, 2, 3, 3]
 
-    async def test_list_slice(self):
-        testlist = [1, 2, 3, 4]
+    node = lists.list_count()
 
-        node = lists.list_slice()
+    node.inputs["lst"].value = testlist
+    node.inputs["item"].value = 3
+    await node
 
-        node.inputs["lst"].value = testlist
-        node.inputs["start"].value = 1
-        node.inputs["end"].value = 3
-        await node
+    assert node.outputs["out"].value == 2
 
-        self.assertEqual(node.outputs["out"].value, [2, 3])
-        self.assertEqual(testlist, [1, 2, 3, 4])
 
-    async def test_list_slice_step(self):
-        testlist = [1, 2, 3, 4, 5]
+@pytest_funcnodes.nodetest(lists.list_insert)
+async def test_list_insert():
+    testlist = [1, 2, 3]
 
-        node = lists.list_slice_step()
+    node = lists.list_insert()
 
-        node.inputs["lst"].value = testlist
-        node.inputs["start"].value = 1
-        node.inputs["end"].value = 4
-        node.inputs["step"].value = 2
-        await node
+    node.inputs["lst"].value = testlist
+    node.inputs["index"].value = 1
+    node.inputs["item"].value = 4
+    await node
 
-        self.assertEqual(node.outputs["out"].value, [2, 4])
-        self.assertEqual(testlist, [1, 2, 3, 4, 5])
+    assert node.outputs["out"].value == [1, 4, 2, 3]
+    assert testlist == [1, 2, 3]
+
+
+@pytest_funcnodes.nodetest(lists.list_set)
+async def test_list_set():
+    testlist = [1, 2, 3]
+
+    node = lists.list_set()
+
+    node.inputs["lst"].value = testlist
+    node.inputs["index"].value = 1
+    node.inputs["item"].value = 4
+    await node
+
+    assert node.outputs["out"].value == [1, 4, 3]
+    assert testlist == [1, 2, 3]
+
+
+@pytest_funcnodes.nodetest(lists.list_slice)
+async def test_list_slice():
+    testlist = [1, 2, 3, 4]
+
+    node = lists.list_slice()
+
+    node.inputs["lst"].value = testlist
+    node.inputs["start"].value = 1
+    node.inputs["end"].value = 3
+    await node
+
+    assert node.outputs["out"].value == [2, 3]
+    assert testlist == [1, 2, 3, 4]
+
+
+@pytest_funcnodes.nodetest(lists.list_slice_step)
+async def test_list_slice_step():
+    testlist = [1, 2, 3, 4, 5]
+
+    node = lists.list_slice_step()
+
+    node.inputs["lst"].value = testlist
+    node.inputs["start"].value = 1
+    node.inputs["end"].value = 4
+    node.inputs["step"].value = 2
+    await node
+
+    assert node.outputs["out"].value == [2, 4]
+    assert testlist == [1, 2, 3, 4, 5]
