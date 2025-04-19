@@ -17,6 +17,7 @@ dev = [
  "funcnodes-module>=0.2.9",
  "pre-commit>=4.1.0",
  "pytest>=8.3.4",
+ "pytest-funcnodes>=0.1.0",
 ]
 
 [build-system]

@@ -4,6 +4,7 @@ from .math_nodes import NODE_SHELF as math_shelf
 from .lists import NODE_SHELF as lists_shelf
 from .strings import NODE_SHELF as strings_shelf
 from .dicts import NODE_SHELF as dicts_shelf
+from .input import NODE_SHELF as input_shelf
 
 
 __version__ = "0.2.1"
@@ -11,6 +12,7 @@ __version__ = "0.2.1"
 NODE_SHELF = Shelf(
     nodes=[],
     subshelves=[
+        input_shelf,
         lists_shelf,
         dicts_shelf,
         strings_shelf,
