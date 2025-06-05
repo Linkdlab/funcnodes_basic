@@ -1,6 +1,6 @@
 """Logic Nodes for control flow and decision making."""
 
-from funcnodes_core.node import Node, TriggerStack
+from funcnodes_core.node import Node
 from typing import Any, List, Optional
 from funcnodes_core.io import NodeInput, NodeOutput, NoValue
 import asyncio
@@ -35,8 +35,19 @@ class WhileNode(Node):
     async def func(self, condition: bool, input: Any) -> None:
         if self.inputs["condition"].value:
             self.outputs["do"].value = input
-            triggerstack = TriggerStack()
-            await self.outputs["do"].trigger(triggerstack)
+            datapaths = [
+                ip.datapath
+                for ip in self.outputs["do"].connections
+                if ip.datapath is not None
+            ]
+
+            while datapaths:
+                for dp in datapaths:
+                    if dp.done(breaking_nodes=[self]):
+                        datapaths.remove(dp)
+                        break
+                else:
+                    await asyncio.sleep(0.1)
             self.request_trigger()
         else:
             self.outputs["done"].value = input
@@ -94,9 +105,21 @@ class ForNode(Node):
             pass
 
         for i in self.progress(input, desc="Iterating", unit="it", total=iplen):
-            self.outputs["do"].set_value(i, does_trigger=False)
-            triggerstack = TriggerStack()
-            await self.outputs["do"].trigger(triggerstack)
+            self.outputs["do"].set_value(i, does_trigger=True)
+            datapaths = [
+                ip.datapath
+                for ip in self.outputs["do"].connections
+                if ip.datapath is not None
+            ]
+
+            while datapaths:
+                for dp in datapaths:
+                    if dp.done(breaking_nodes=[self]):
+                        datapaths.remove(dp)
+                        break
+                else:
+                    await asyncio.sleep(0.1)
+
             v = self.inputs["collector"].value
             if v is not NoValue:
                 results.append(v)
