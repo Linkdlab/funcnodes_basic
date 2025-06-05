@@ -42,8 +42,12 @@ async def test_wait_node():
 @pytest_funcnodes.nodetest(logic.ForNode)
 async def test_for_node():
     node = logic.ForNode()
+    waitnode = logic.WaitNode()
+    waitnode.inputs["delay"].value = 0.5
+    waitnode.inputs["input"].connect(node.outputs["do"])
+    waitnode.outputs["output"].connect(node.inputs["collector"])
     node.inputs["input"].value = "hello"
-    node.outputs["do"].connect(node.inputs["collector"])
+
     await node
 
     assert node.outputs["done"].value == ["h", "e", "l", "l", "o"]
