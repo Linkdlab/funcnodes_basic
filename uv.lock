@@ -398,7 +398,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "funcnodes" },
-    { name = "funcnodes-core", specifier = ">=0.3.9" },
+    { name = "funcnodes-core", specifier = ">=0.4.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -411,7 +411,7 @@ dev = [
 
 [[package]]
 name = "funcnodes-core"
-version = "0.3.53"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dill" },
@@ -420,9 +420,9 @@ dependencies = [
     { name = "setuptools" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3d/cf/6c8c7f06abe437355c95b0b7c59e94efe12cea60772df56fac3aa6e850ee/funcnodes_core-0.3.53.tar.gz", hash = "sha256:2356def5c0c41f07ed895da299685e89d4c46537f927e8a1213bf81d440b8aaf", size = 93160 }
+sdist = { url = "https://files.pythonhosted.org/packages/cf/59/71bed27395833896f4dd88dcce6ea49b05f1d4baa18e0ada27058bfa0bbe/funcnodes_core-0.4.0.tar.gz", hash = "sha256:ae97a35db6b027dd3d2789934463c0c886fcd4edc16da2b09c7627c1637c434d", size = 97902 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e5/ea/a6fc4d30cbe3174caac20ef6b1e60d725506b325d8aa5f272ad8c1b6bf4f/funcnodes_core-0.3.53-py3-none-any.whl", hash = "sha256:d3c9d3635d516e26a4236b40da1e368e1e2cc66aa8a839625fb0bb30ee516e49", size = 83813 },
+    { url = "https://files.pythonhosted.org/packages/47/79/0a038c75c4fe9576eb9a8668d9174355ac4130e2e72948f1721b597af7a2/funcnodes_core-0.4.0-py3-none-any.whl", hash = "sha256:a4706ecea524a7c31fc3da1736474d524df40f2749d40a1b020dbf192911500e", size = 85423 },
 ]
 
 [[package]]
