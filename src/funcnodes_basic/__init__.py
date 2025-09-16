@@ -8,7 +8,7 @@ from .input import NODE_SHELF as input_shelf
 from .dataclass import NODE_SHELF as dataclass_shelf
 from .pyobjects import NODE_SHELF as pyobjects_shelf
 
-__version__ = "0.2.3"
+__version__ = "1.0.0"
 
 NODE_SHELF = Shelf(
     nodes=[],
