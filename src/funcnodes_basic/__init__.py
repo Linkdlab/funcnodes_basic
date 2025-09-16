@@ -6,6 +6,7 @@ from .strings import NODE_SHELF as strings_shelf
 from .dicts import NODE_SHELF as dicts_shelf
 from .input import NODE_SHELF as input_shelf
 from .dataclass import NODE_SHELF as dataclass_shelf
+from .pyobjects import NODE_SHELF as pyobjects_shelf
 
 __version__ = "0.2.3"
 
@@ -15,6 +16,7 @@ NODE_SHELF = Shelf(
         input_shelf,
         lists_shelf,
         dicts_shelf,
+        pyobjects_shelf,
         dataclass_shelf,
         strings_shelf,
         math_shelf,

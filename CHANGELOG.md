@@ -1,3 +1,9 @@
+## v1.0.0 (2025-09-16)
+
+### Feat
+
+- **pyobjects**: ✨ add nodes for Python object attribute inspection and mutation
+
 ## v0.2.4 (2025-06-05)
 
 ### Fix
