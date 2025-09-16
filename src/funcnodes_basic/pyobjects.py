@@ -21,24 +21,6 @@ def _list_public_attributes(obj: Any) -> List[str]:
     return sorted(attr for attr in attributes if not attr.startswith("_"))
 
 
-def _attribute_io_options() -> Dict[str, Dict[str, Any]]:
-    """Create default IO options for object/attribute inputs."""
-
-    return {
-        "obj": {
-            "on": {
-                "after_set_value": fn.decorator.update_other_io_options(
-                    "attribute",
-                    _list_public_attributes,
-                )
-            }
-        },
-        "attribute": {
-            "value_options": {"options": []},
-        },
-    }
-
-
 def _ensure_non_private(attribute: str) -> None:
     """Reject attribute names that appear private."""
 
@@ -52,13 +34,19 @@ def _ensure_non_private(attribute: str) -> None:
     id="pyobject_get_attribute",
     name="Get Attribute",
     description="Retrieve the value of a non-private attribute from a Python object.",
-    default_io_options=_attribute_io_options(),
+    # default_io_options=_attribute_io_options(),
 )
 def get_attribute(
     obj: Annotated[
         Any,
         InputMeta(
             description="Python object that exposes the desired attribute.",
+            on={
+                "after_set_value": fn.decorator.update_other_io_options(
+                    "attribute",
+                    _list_public_attributes,
+                )
+            }
         ),
     ],
     attribute: Annotated[
@@ -114,7 +102,6 @@ def has_attribute(
     id="pyobject_set_attribute",
     name="Set Attribute",
     description="Assign a new value to a non-private attribute on a Python object.",
-    default_io_options=_attribute_io_options(),
 )
 def set_attribute(
     obj: Annotated[
@@ -148,13 +135,18 @@ def set_attribute(
     id="pyobject_delete_attribute",
     name="Delete Attribute",
     description="Remove a non-private attribute from a Python object.",
-    default_io_options=_attribute_io_options(),
 )
 def delete_attribute(
     obj: Annotated[
         Any,
         InputMeta(
             description="Python object whose attribute should be removed.",
+            on={
+                "after_set_value": fn.decorator.update_other_io_options(
+                    "attribute",
+                    _list_public_attributes,
+                )
+            }
         ),
     ],
     attribute: Annotated[
