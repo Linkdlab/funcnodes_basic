@@ -1,6 +1,6 @@
 [project]
 name = "funcnodes-basic"
-version = "0.2.4"
+version = "1.0.0"
 description = "Basic functionalities for funcnodes"
 readme = "README.md"
 classifiers = [ "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",]
