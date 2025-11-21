@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, List, Annotated, Dict
+from typing import Any, List, Annotated
 
 import funcnodes_core as fn
 from funcnodes_core.io import InputMeta, OutputMeta
@@ -46,7 +46,7 @@ def get_attribute(
                     "attribute",
                     _list_public_attributes,
                 )
-            }
+            },
         ),
     ],
     attribute: Annotated[
@@ -146,7 +146,7 @@ def delete_attribute(
                     "attribute",
                     _list_public_attributes,
                 )
-            }
+            },
         ),
     ],
     attribute: Annotated[

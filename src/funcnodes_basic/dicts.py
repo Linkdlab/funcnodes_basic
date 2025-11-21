@@ -30,7 +30,13 @@ class DictGetNode(fn.Node):
         self._keymap = keymap
 
     async def func(self, dictionary: dict, key: str) -> None:
-        v = dictionary.get(self._keymap[key], fn.NoValue)
+        try:
+            v = dictionary[self._keymap[key]]
+        except KeyError:
+            try:
+                v = dictionary[key]
+            except KeyError:
+                v = fn.NoValue
         self.outputs["value"].value = v
         return v
 

@@ -3,6 +3,7 @@
 from funcnodes_core.node import Node
 from typing import Any, List, Optional
 from funcnodes_core.io import NodeInput, NodeOutput, NoValue
+from collections.abc import AsyncIterable
 import asyncio
 
 import funcnodes_core as fn
@@ -104,8 +105,8 @@ class ForNode(Node):
         except Exception:
             pass
 
-        for i in self.progress(input, desc="Iterating", unit="it", total=iplen):
-            self.outputs["do"].set_value(i, does_trigger=True)
+        async def _iterate_value(value: Any):
+            self.outputs["do"].set_value(value, does_trigger=True)
             datapaths = [
                 ip.datapath
                 for ip in self.outputs["do"].connections
@@ -124,6 +125,16 @@ class ForNode(Node):
             if v is not NoValue:
                 results.append(v)
                 self.inputs["collector"].value = NoValue
+
+        if isinstance(input, AsyncIterable):
+            # handle async iterables/generators without forcing them into sync iteration
+            with self.progress(desc="Iterating", unit="it", total=iplen) as pbar:
+                async for i in input:
+                    await _iterate_value(i)
+                    pbar.update(1)
+        else:
+            for i in self.progress(input, desc="Iterating", unit="it", total=iplen):
+                await _iterate_value(i)
         self.outputs["done"].value = results
 
 

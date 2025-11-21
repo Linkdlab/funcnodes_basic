@@ -53,6 +53,72 @@ async def test_for_node():
     assert node.outputs["done"].value == ["h", "e", "l", "l", "o"]
 
 
+@pytest_funcnodes.nodetest(logic.ForNode)
+async def test_for_node_async_generator():
+    async def async_generator():
+        yield "hello"
+        yield "world"
+        yield "foo"
+        yield "bar"
+
+    node = logic.ForNode()
+    waitnode = logic.WaitNode()
+    waitnode.inputs["delay"].value = 0.5
+    waitnode.inputs["input"].connect(node.outputs["do"])
+    waitnode.outputs["output"].connect(node.inputs["collector"])
+    node.outputs["do"].connect(waitnode.inputs["input"])
+    node.inputs["input"].value = async_generator()
+
+    await node
+    assert node.outputs["done"].value == ["hello", "world", "foo", "bar"]
+
+
+@pytest_funcnodes.nodetest(logic.ForNode)
+async def test_for_node_async_iterable_object():
+    class AsyncIterable:
+        def __init__(self, values):
+            self._values = values
+
+        def __aiter__(self):
+            self._iter = iter(self._values)
+            return self
+
+        async def __anext__(self):
+            try:
+                return next(self._iter)
+            except StopIteration:
+                raise StopAsyncIteration
+
+    node = logic.ForNode()
+    waitnode = logic.WaitNode()
+    waitnode.inputs["delay"].value = 0.1
+    waitnode.inputs["input"].connect(node.outputs["do"])
+    waitnode.outputs["output"].connect(node.inputs["collector"])
+    node.outputs["do"].connect(waitnode.inputs["input"])
+    node.inputs["input"].value = AsyncIterable(["a", "b", "c"])
+
+    await node
+
+    assert node.outputs["done"].value == ["a", "b", "c"]
+
+    async def async_generator():
+        yield "d"
+        yield "e"
+        yield "f"
+
+    node = logic.ForNode()
+    waitnode = logic.WaitNode()
+    waitnode.inputs["delay"].value = 0.1
+    waitnode.inputs["input"].connect(node.outputs["do"])
+    waitnode.outputs["output"].connect(node.inputs["collector"])
+    node.outputs["do"].connect(waitnode.inputs["input"])
+    node.inputs["input"].value = async_generator()
+
+    await node
+
+    assert node.outputs["done"].value == ["d", "e", "f"]
+
+
 @pytest_funcnodes.nodetest(logic.CollectorNode)
 async def test_collector_node():
     node = logic.CollectorNode()

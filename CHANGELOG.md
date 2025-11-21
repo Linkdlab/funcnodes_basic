@@ -1,3 +1,13 @@
+## v1.1.0 (2025-11-21)
+
+### Feat
+
+- **logic**: enhance ForNode to support async iterables
+
+### Fix
+
+- **dicts**: improve key retrieval logic in DictGetNode
+
 ## v1.0.0 (2025-09-16)
 
 ### Feat
