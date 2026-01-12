@@ -237,3 +237,27 @@ async def test_list_slice_step():
 
     assert node.outputs["out"].value == [2, 4]
     assert testlist == [1, 2, 3, 4, 5]
+
+
+@pytest_funcnodes.nodetest(lists.list_flatten)
+async def test_list_flatten():
+    testlist = [1, [2, 3], (4, 5), "ab", {"x": 1}]
+
+    node = lists.list_flatten()
+    node.inputs["lst"].value = testlist
+    await node
+
+    assert node.outputs["out"].value == [1, 2, 3, 4, 5, "ab", {"x": 1}]
+    assert testlist == [1, [2, 3], (4, 5), "ab", {"x": 1}]
+
+
+@pytest_funcnodes.nodetest(lists.list_unique)
+async def test_list_unique():
+    testlist = [1, 2, 1, {"a": 1}, {"a": 1}, 2]
+
+    node = lists.list_unique()
+    node.inputs["lst"].value = testlist
+    await node
+
+    assert node.outputs["out"].value == [1, 2, {"a": 1}]
+    assert testlist == [1, 2, 1, {"a": 1}, {"a": 1}, 2]
