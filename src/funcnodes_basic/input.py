@@ -1,5 +1,6 @@
 from typing import Union
 import funcnodes_core as fn
+import json
 
 
 @fn.NodeDecorator(
@@ -12,6 +13,18 @@ import funcnodes_core as fn
 )
 def any_input(input: Union[str, float, int, bool]) -> str:
     return input
+
+
+@fn.NodeDecorator(
+    node_id="input.json",
+    node_name="JSON Input",
+    description="Input a JSON object",
+    outputs=[
+        {"name": "json"},
+    ],
+)
+def json_input(input: str) -> Union[str, int, float, bool, dict]:
+    return json.loads(input)
 
 
 @fn.NodeDecorator(
@@ -73,6 +86,7 @@ def bool_input(input: bool) -> bool:
 
 NODE_SHELF = fn.Shelf(
     nodes=[
+        json_input,
         any_input,
         str_input,
         int_input,
