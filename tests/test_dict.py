@@ -99,3 +99,59 @@ async def test_dict_to_list():
 
     assert node.outputs["keys"].value == ["a", "b", "c"]
     assert node.outputs["values"].value == [1, 2, 3]
+
+
+@pytest_funcnodes.nodetest(dicts.dict_set_default)
+async def test_dict_set_default_missing_key():
+    testdict = {"a": 1}
+
+    node = dicts.dict_set_default()
+
+    node.inputs["dictionary"].value = testdict
+    node.inputs["key"].value = "b"
+    node.inputs["value"].value = 2
+    await node
+
+    assert node.outputs["out"].value == {"a": 1, "b": 2}
+
+
+@pytest_funcnodes.nodetest(dicts.dict_set_default)
+async def test_dict_set_default_existing_key():
+    testdict = {"a": 1}
+
+    node = dicts.dict_set_default()
+
+    node.inputs["dictionary"].value = testdict
+    node.inputs["key"].value = "a"
+    node.inputs["value"].value = 2
+    await node
+
+    assert node.outputs["out"].value == {"a": 1}
+
+
+@pytest_funcnodes.nodetest(dicts.dict_set_key)
+async def test_dict_set_key_overwrite():
+    testdict = {"a": 1}
+
+    node = dicts.dict_set_key()
+
+    node.inputs["dictionary"].value = testdict
+    node.inputs["key"].value = "a"
+    node.inputs["value"].value = 2
+    await node
+
+    assert node.outputs["out"].value == {"a": 2}
+
+
+@pytest_funcnodes.nodetest(dicts.dict_set_key)
+async def test_dict_set_key_new_key():
+    testdict = {"a": 1}
+
+    node = dicts.dict_set_key()
+
+    node.inputs["dictionary"].value = testdict
+    node.inputs["key"].value = "b"
+    node.inputs["value"].value = 2
+    await node
+
+    assert node.outputs["out"].value == {"a": 1, "b": 2}

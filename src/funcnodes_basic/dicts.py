@@ -96,6 +96,27 @@ def dict_to_list(dictionary: dict) -> Tuple[List[Any], List[Any]]:
     return list(keys), list(values)
 
 
+@fn.NodeDecorator(
+    id="dict_set_default",
+    name="Dict Set Default",
+)
+def dict_set_default(dictionary: dict, key: Any, value: Any) -> dict:
+    result = dict(dictionary)
+    if key not in result:
+        result[key] = value
+    return result
+
+
+@fn.NodeDecorator(
+    id="dict_set_key",
+    name="Dict Set Key",
+)
+def dict_set_key(dictionary: dict, key: Any, value: Any) -> dict:
+    result = dict(dictionary)
+    result[key] = value
+    return result
+
+
 NODE_SHELF = fn.Shelf(
     nodes=[
         DictGetNode,
@@ -105,6 +126,8 @@ NODE_SHELF = fn.Shelf(
         dict_from_items,
         dict_from_keys_values,
         dict_to_list,
+        dict_set_default,
+        dict_set_key,
     ],
     name="Dicts",
     description="Work with dictionaries",
