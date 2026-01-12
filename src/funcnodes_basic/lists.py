@@ -234,6 +234,44 @@ def list_slice_step(
     return lst[start:end:step]
 
 
+@fn.NodeDecorator(
+    id="list_flatten",
+    name="List Flatten",
+    description="Flatten a list by one level.",
+)
+def list_flatten(lst: List[Any]) -> List[Any]:
+    flattened: List[Any] = []
+    for item in lst:
+        if isinstance(item, (list, tuple)):
+            flattened.extend(item)
+        else:
+            flattened.append(item)
+    return flattened
+
+
+@fn.NodeDecorator(
+    id="list_unique",
+    name="List Unique",
+    description="Remove duplicates while preserving order.",
+)
+def list_unique(lst: List[Any]) -> List[Any]:
+    unique: List[Any] = []
+    seen_hashable = set()
+
+    for item in lst:
+        try:
+            if item in seen_hashable:
+                continue
+            seen_hashable.add(item)
+            unique.append(item)
+        except TypeError:
+            if any(item == existing for existing in unique):
+                continue
+            unique.append(item)
+
+    return unique
+
+
 NODE_SHELF = fn.Shelf(
     nodes=[
         contains,
@@ -252,6 +290,8 @@ NODE_SHELF = fn.Shelf(
         list_set,
         list_slice,
         list_slice_step,
+        list_flatten,
+        list_unique,
     ],
     subshelves=[],
     name="Lists",

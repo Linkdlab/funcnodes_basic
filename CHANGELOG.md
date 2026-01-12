@@ -1,3 +1,11 @@
+## v1.2.0 (2026-01-12)
+
+### Feat
+
+- **basic**: add dict utilities and list/json helpers
+- **dicts**: add nodes to set missing or existing keys
+- **input**: add json input node
+
 ## v1.1.0 (2025-11-21)
 
 ### Feat
