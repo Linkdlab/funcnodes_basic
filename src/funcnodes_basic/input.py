@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Any
 import funcnodes_core as fn
 import json
 
@@ -24,7 +24,20 @@ def any_input(input: Union[str, float, int, bool]) -> str:
     ],
 )
 def json_input(input: str) -> Union[str, int, float, bool, dict]:
-    return json.loads(input)
+    return json.loads(input, cls=fn.JSONDecoder)
+
+
+@fn.NodeDecorator(
+    node_id="input.json_dump",
+    node_name="JSON Dump",
+    description="Dump a Python object as a JSON string",
+    outputs=[
+        {"name": "json"},
+    ],
+)
+def json_dump(obj: Any, indent: int = 0, sort_keys: bool = False) -> str:
+    indent = int(indent)
+    return json.dumps(obj, indent=indent if indent > 0 else None, sort_keys=sort_keys)
 
 
 @fn.NodeDecorator(
@@ -87,6 +100,7 @@ def bool_input(input: bool) -> bool:
 NODE_SHELF = fn.Shelf(
     nodes=[
         json_input,
+        json_dump,
         any_input,
         str_input,
         int_input,

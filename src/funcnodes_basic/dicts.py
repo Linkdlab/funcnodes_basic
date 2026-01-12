@@ -3,7 +3,7 @@ work with python dictionaries
 """
 
 import funcnodes_core as fn
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Annotated, Literal
 
 
 class DictGetNode(fn.Node):
@@ -117,6 +117,203 @@ def dict_set_key(dictionary: dict, key: Any, value: Any) -> dict:
     return result
 
 
+@fn.NodeDecorator(
+    id="dict_merge",
+    name="Dict Merge",
+)
+def dict_merge(
+    a: dict,
+    b: dict,
+    prefer: Annotated[Literal["a", "b"], fn.InputMeta(hidden=True)] = "b",
+) -> dict:
+    if prefer == "a":
+        return {**b, **a}
+    return {**a, **b}
+
+
+@fn.NodeDecorator(
+    id="dict_select_keys",
+    name="Dict Select Keys",
+)
+def dict_select_keys(
+    dictionary: Annotated[
+        dict,
+        fn.InputMeta(
+            on={
+                "after_set_value": fn.decorator.update_other_io_options(
+                    "keys", lambda x: list(x.keys())
+                )
+            }
+        ),
+    ],
+    keys: List[Any],
+    ignore_missing: bool = True,
+) -> dict:
+    selected: dict = {}
+    for key in keys:
+        if key in dictionary:
+            selected[key] = dictionary[key]
+        elif not ignore_missing:
+            raise KeyError(key)
+    return selected
+
+
+@fn.NodeDecorator(
+    id="dict_rename_key",
+    name="Dict Rename Key",
+)
+def dict_rename_key(
+    dictionary: Annotated[
+        dict,
+        fn.InputMeta(
+            on={
+                "after_set_value": fn.decorator.update_other_io_options(
+                    "old_key", lambda x: list(x.keys())
+                )
+            }
+        ),
+    ],
+    old_key: Any,
+    new_key: Any,
+    overwrite: bool = False,
+) -> dict:
+    if old_key == new_key:
+        return dict(dictionary)
+
+    result = dict(dictionary)
+    if old_key not in result:
+        raise KeyError(old_key)
+    if new_key in result and not overwrite:
+        raise KeyError(new_key)
+
+    result[new_key] = result.pop(old_key)
+    return result
+
+
+@fn.NodeDecorator(
+    id="dict_delete_key",
+    name="Dict Delete Key",
+)
+def dict_delete_key(
+    dictionary: Annotated[
+        dict,
+        fn.InputMeta(
+            on={
+                "after_set_value": fn.decorator.update_other_io_options(
+                    "key", lambda x: list(x.keys())
+                )
+            }
+        ),
+    ],
+    key: Any,
+    ignore_missing: bool = True,
+) -> dict:
+    result = dict(dictionary)
+    if key in result:
+        del result[key]
+    elif not ignore_missing:
+        raise KeyError(key)
+    return result
+
+
+@fn.NodeDecorator(
+    id="dict_pop",
+    name="Dict Pop",
+    outputs=[
+        {"name": "new_dict"},
+        {"name": "value"},
+    ],
+)
+def dict_pop(
+    dictionary: Annotated[
+        dict,
+        fn.InputMeta(
+            on={
+                "after_set_value": fn.decorator.update_other_io_options(
+                    "key", lambda x: list(x.keys())
+                )
+            }
+        ),
+    ],
+    key: Any,
+    default: Any = fn.NoValue,
+) -> Tuple[dict, Any]:
+    result = dict(dictionary)
+    if key in result:
+        value = result.pop(key)
+        return result, value
+    if default is fn.NoValue or default == str(fn.NoValue):
+        raise KeyError(key)
+    return result, default
+
+
+@fn.NodeDecorator(
+    id="dict_deep_get",
+    name="Dict Deep Get",
+)
+def dict_deep_get(obj: Any, path: List[Any]) -> Any:
+    current = obj
+    for key in path:
+        if isinstance(current, dict):
+            if key in current:
+                current = current[key]
+            else:
+                return fn.NoValue
+        elif isinstance(current, (list, tuple)):
+            if isinstance(key, int):
+                index = key
+            elif isinstance(key, str) and key.lstrip("-").isdigit():
+                index = int(key)
+            else:
+                return fn.NoValue
+            if -len(current) <= index < len(current):
+                current = current[index]
+            else:
+                return fn.NoValue
+        else:
+            return fn.NoValue
+    return current
+
+
+@fn.NodeDecorator(
+    id="dict_deep_set",
+    name="Dict Deep Set",
+)
+def dict_deep_set(
+    dictionary: dict,
+    path: List[Any],
+    value: Any,
+    create_missing: bool = True,
+) -> dict:
+    if not path:
+        raise ValueError("path must not be empty")
+
+    if not isinstance(dictionary, dict):
+        raise TypeError("dictionary must be a dict")
+
+    result = dict(dictionary)
+    current = result
+
+    for key in path[:-1]:
+        if key in current:
+            next_value = current[key]
+            if not isinstance(next_value, dict):
+                raise TypeError(
+                    f"Expected dict at path segment '{key}', got {type(next_value)}"
+                )
+            next_dict = dict(next_value)
+        else:
+            if not create_missing:
+                raise KeyError(key)
+            next_dict = {}
+
+        current[key] = next_dict
+        current = next_dict
+
+    current[path[-1]] = value
+    return result
+
+
 NODE_SHELF = fn.Shelf(
     nodes=[
         DictGetNode,
@@ -128,6 +325,13 @@ NODE_SHELF = fn.Shelf(
         dict_to_list,
         dict_set_default,
         dict_set_key,
+        dict_merge,
+        dict_select_keys,
+        dict_rename_key,
+        dict_delete_key,
+        dict_pop,
+        dict_deep_get,
+        dict_deep_set,
     ],
     name="Dicts",
     description="Work with dictionaries",

@@ -2,6 +2,7 @@ from funcnodes_basic import input
 import pytest_funcnodes
 import pytest
 import funcnodes_core as fn
+import json
 
 
 @pytest_funcnodes.nodetest(input.any_input)
@@ -149,5 +150,29 @@ async def test_json_input_invalid():
     node = input.json_input()
 
     node.inputs["input"].value = "{"
+    with pytest.raises(fn.NodeTriggerError):
+        await node
+
+
+@pytest_funcnodes.nodetest(input.json_dump)
+async def test_json_dump_roundtrip():
+    node = input.json_dump()
+
+    node.inputs["obj"].value = {"b": 2, "a": 1}
+    await node
+
+    dumped = node.outputs["json"].value
+    assert json.loads(dumped) == {"b": 2, "a": 1}
+
+    node.inputs["sort_keys"].value = True
+    await node
+    assert node.outputs["json"].value == '{"a": 1, "b": 2}'
+
+
+@pytest_funcnodes.nodetest(input.json_dump)
+async def test_json_dump_non_serializable():
+    node = input.json_dump()
+
+    node.inputs["obj"].value = {1, 2, 3}
     with pytest.raises(fn.NodeTriggerError):
         await node
